@@ -10,7 +10,7 @@ public class AppRunner {
     private final UniversalArray<Product> products = new UniversalArrayImpl<>();
 
     private final CoinAcceptor coinAcceptor;
-
+    private PaymentProcessor paymentProcessor;
     private static boolean isExit = false;
 
     private AppRunner() {
@@ -22,6 +22,7 @@ public class AppRunner {
                 new Mars(ActionLetter.F, 80),
                 new Pistachios(ActionLetter.G, 130)
         });
+        this.paymentProcessor = new CoinPaymentProcessor(new CoinAcceptor(100));
         coinAcceptor = new CoinAcceptor(100);
     }
 
@@ -31,13 +32,21 @@ public class AppRunner {
             app.startSimulation();
         }
     }
-
+    private void switchPaymentProcessor() {
+        print("Выберите способ оплаты: 1 - монеты, 2 - карта");
+        String choice = fromConsole();
+        if ("1".equals(choice)) {
+            this.paymentProcessor = new CoinPaymentProcessor(new CoinAcceptor(100));
+        } else if ("2".equals(choice)) {
+            this.paymentProcessor = new CardPaymentProcessor();
+        }
+    }
     private void startSimulation() {
         print("В автомате доступны:");
         showProducts(products);
 
         print("Монет на сумму: " + coinAcceptor.getAmount());
-
+        switchPaymentProcessor();
         UniversalArray<Product> allowProducts = new UniversalArrayImpl<>();
         allowProducts.addAll(getAllowedProducts().toArray());
         chooseAction(allowProducts);
