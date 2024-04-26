@@ -10,7 +10,7 @@ public class AppRunner {
     private final UniversalArray<Product> products = new UniversalArrayImpl<>();
 
     private final CoinAcceptor coinAcceptor;
-
+    private PaymentProcessor paymentProcessor;
     private static boolean isExit = false;
 
     private AppRunner() {
@@ -22,6 +22,7 @@ public class AppRunner {
                 new Mars(ActionLetter.F, 80),
                 new Pistachios(ActionLetter.G, 130)
         });
+        this.paymentProcessor = new CoinPaymentProcessor(new CoinAcceptor(100));
         coinAcceptor = new CoinAcceptor(100);
     }
 
